@@ -8,7 +8,11 @@ import (
 )
 
 func runLeader(temporalClient client.Client) {
-	workflowId := "cron-1m"
+	executeCronWorkflow(temporalClient, "cron-1m", "* * * * *")
+	executeCronWorkflow(temporalClient, "cron-5m", "*/5 * * * *")
+}
+
+func executeCronWorkflow(temporalClient client.Client, workflowId string, cronSchedule string) {
 	lastWorkflow := temporalClient.GetWorkflow(context.Background(), workflowId, "")
 	if lastWorkflow != nil {
 		err := temporalClient.CancelWorkflow(context.Background(), workflowId, "")
@@ -22,11 +26,11 @@ func runLeader(temporalClient client.Client) {
 	workflowOptions := client.StartWorkflowOptions{
 		ID:           workflowId,
 		TaskQueue:    queueName,
-		CronSchedule: "* * * * *",
+		CronSchedule: cronSchedule,
 	}
 	param := WorkflowParam{
-		Message: "Hello " + workflowId,
-		Size:    10,
+		Message: workflowId,
+		Size:    200,
 	}
 	workflowRun, err := temporalClient.ExecuteWorkflow(
 		context.Background(), workflowOptions,

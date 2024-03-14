@@ -19,10 +19,14 @@ type WorkflowResult struct {
 
 func ParentWorkflow(ctx workflow.Context, param WorkflowParam) (WorkflowResult, error) {
 	logger := workflow.GetLogger(ctx)
-	logger.Info("Workflow started, param:", param.Message)
+	logger.Info("Parent workflow started, param:", param.Message)
 
 	childFutures := make([]workflow.Future, 0)
 	for i := 0; i < param.Size; i++ {
+		cwo := workflow.ChildWorkflowOptions{
+			WorkflowID: fmt.Sprint(param.Message, "-child-", i),
+		}
+		ctx := workflow.WithChildOptions(ctx, cwo)
 		future := workflow.ExecuteChildWorkflow(ctx, ChildWorkflow, i)
 		childFutures = append(childFutures, future)
 	}
