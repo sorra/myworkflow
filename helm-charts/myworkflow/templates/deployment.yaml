@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myworkflow-deployment
+  labels:
+    app: myworkflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myworkflow
+  template:
+    metadata:
+      labels:
+        app: myworkflow
+    spec:
+      containers:
+        - name: myworkflow
+          image: myworkflow:latest
+          imagePullPolicy: IfNotPresent
+          # ports:
+          #   - containerPort: 8080
