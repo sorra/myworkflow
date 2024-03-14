@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myworkflow-leader
+  labels:
+    app: myworkflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myworkflow
+  template:
+    metadata:
+      labels:
+        app: myworkflow
+    spec:
+      containers:
+        - name: myworkflow-leader
+          image: myworkflow:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: HOSTPORT
+              value: temporal-frontend.default.svc.cluster.local:7233
+            - name: MW_ROLE
+              value: leader

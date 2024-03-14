@@ -6,6 +6,8 @@ import (
 	"sort"
 )
 
+const queueName = "work-queue"
+
 type WorkflowParam struct {
 	Message string
 	Size    int
@@ -34,6 +36,7 @@ func ParentWorkflow(ctx workflow.Context, param WorkflowParam) (WorkflowResult, 
 		childResults = append(childResults, result)
 	}
 	sort.Ints(childResults)
+
 	result := fmt.Sprint("Completed ", childResults[0], childResults[len(childResults)-1])
 	logger.Info("Parent workflow execution: " + param.Message + " " + result)
 	return WorkflowResult{Value: result}, nil

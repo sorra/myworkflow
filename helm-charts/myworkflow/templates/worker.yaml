@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myworkflow-deployment
+  name: myworkflow-worker
   labels:
     app: myworkflow
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: myworkflow
@@ -15,8 +15,11 @@ spec:
         app: myworkflow
     spec:
       containers:
-        - name: myworkflow
+        - name: myworkflow-worker
           image: myworkflow:latest
           imagePullPolicy: IfNotPresent
-          # ports:
-          #   - containerPort: 8080
+          env:
+            - name: HOSTPORT
+              value: temporal-frontend.default.svc.cluster.local:7233
+            - name: MW_ROLE
+              value: worker

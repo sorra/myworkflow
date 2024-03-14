@@ -7,14 +7,8 @@ import (
 	"go.temporal.io/sdk/client"
 )
 
-func runLeader() {
-	temporalClient, err := client.Dial(client.Options{})
-	if err != nil {
-		log.Fatalln("Unable to create a temporal client", err)
-	}
-	defer temporalClient.Close()
-
-	workflowId := "1m"
+func runLeader(temporalClient client.Client) {
+	workflowId := "cron-1m"
 	lastWorkflow := temporalClient.GetWorkflow(context.Background(), workflowId, "")
 	if lastWorkflow != nil {
 		err := temporalClient.CancelWorkflow(context.Background(), workflowId, "")

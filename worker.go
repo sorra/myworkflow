@@ -6,17 +6,11 @@ import (
 	"log"
 )
 
-func runWorker() {
-	temporalClient, err := client.Dial(client.Options{})
-	if err != nil {
-		log.Fatalln("Unable to create a temporal client", err)
-	}
-	defer temporalClient.Close()
-
+func runWorker(temporalClient client.Client) {
 	myWorker := worker.New(temporalClient, queueName, worker.Options{})
 	myWorker.RegisterWorkflow(ParentWorkflow)
 	myWorker.RegisterWorkflow(ChildWorkflow)
-	err = myWorker.Run(worker.InterruptCh())
+	err := myWorker.Run(worker.InterruptCh())
 	if err != nil {
 		log.Fatalln("Unable to run a temporal worker", err)
 	}
