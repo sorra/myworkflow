@@ -14,12 +14,25 @@ func runLeader() {
 	}
 	defer temporalClient.Close()
 
+	workflowId := "1m"
+	lastWorkflow := temporalClient.GetWorkflow(context.Background(), workflowId, "")
+	if lastWorkflow != nil {
+		err := temporalClient.CancelWorkflow(context.Background(), workflowId, "")
+		if err != nil {
+			log.Println("Unable to cancel the last workflow:", workflowId, err)
+		} else {
+			log.Println("Cancelled last workflow:", workflowId)
+		}
+	}
+
 	workflowOptions := client.StartWorkflowOptions{
-		TaskQueue: queueName,
+		ID:           workflowId,
+		TaskQueue:    queueName,
+		CronSchedule: "* * * * *",
 	}
 	param := WorkflowParam{
-		Message: "hello world",
-		Code:    1,
+		Message: "Hello " + workflowId,
+		Size:    10,
 	}
 	workflowRun, err := temporalClient.ExecuteWorkflow(
 		context.Background(), workflowOptions,
@@ -27,12 +40,5 @@ func runLeader() {
 	if err != nil {
 		log.Fatalln("Unable to get workflow run:", err)
 	}
-	log.Println("Workflow RunID:", workflowRun.GetRunID())
-
-	var result WorkflowResult
-	err = workflowRun.Get(context.Background(), &result)
-	if err != nil {
-		log.Fatalln("Workflow execution failure:", err)
-	}
-	log.Println("Work execution result:", result.Value)
+	log.Println("Workflow", workflowId, "started, RunID:", workflowRun.GetRunID())
 }
