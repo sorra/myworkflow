@@ -15,7 +15,7 @@ func runLeader(temporalClient client.Client) {
 func executeCronWorkflow(temporalClient client.Client, workflowId string, cronSchedule string) {
 	lastWorkflow := temporalClient.GetWorkflow(context.Background(), workflowId, "")
 	if lastWorkflow != nil {
-		err := temporalClient.CancelWorkflow(context.Background(), workflowId, "")
+		err := temporalClient.TerminateWorkflow(context.Background(), workflowId, "", "restarted")
 		if err != nil {
 			log.Println("Unable to cancel the last workflow:", workflowId, err)
 		} else {
