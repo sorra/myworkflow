@@ -15,8 +15,7 @@ import (
 func runWorker() {
 	temporalClient, err := client.Dial(client.Options{})
 	if err != nil {
-		log.Fatalln("Unable to create Message temporal client", err)
-		return
+		log.Fatalln("Unable to create a temporal client", err)
 	}
 	defer temporalClient.Close()
 
@@ -25,7 +24,7 @@ func runWorker() {
 	myWorker.RegisterActivity(SimpleActivity)
 	err = myWorker.Run(worker.InterruptCh())
 	if err != nil {
-		log.Fatalln("Unable to run Message temporal worker", err)
+		log.Fatalln("Unable to run a temporal worker", err)
 	}
 }
 

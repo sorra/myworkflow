@@ -10,7 +10,7 @@ import (
 func runLeader() {
 	temporalClient, err := client.Dial(client.Options{})
 	if err != nil {
-		log.Fatalln("Unable to create Message temporal client", err)
+		log.Fatalln("Unable to create a temporal client", err)
 	}
 	defer temporalClient.Close()
 
@@ -26,14 +26,13 @@ func runLeader() {
 		SimpleWorkflowDefinition, param)
 	if err != nil {
 		log.Fatalln("Unable to get workflow run:", err)
-		return
 	}
 	log.Println("Workflow RunID:", workflowRun.GetRunID())
+
 	var result WorkflowResult
 	err = workflowRun.Get(context.Background(), &result)
 	if err != nil {
 		log.Fatalln("Workflow execution failure:", err)
-		return
 	}
 	log.Println("Work execution result:", result.Value)
 }
