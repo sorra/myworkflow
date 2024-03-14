@@ -126,30 +126,12 @@ server:
     persistence:
       defaultStore: default
       additionalStores: {}
-
       default:
-        driver: "cassandra"
-
-        cassandra:
-          hosts: []
-          # port: 9042
-          keyspace: "temporal"
-          user: "user"
-          password: "password"
-          existingSecret: ""
-          replicationFactor: 1
-          consistency:
-            default:
-              consistency: "local_quorum"
-              serialConsistency: "local_serial"
-          # datacenter: "us-east-1a"
-          # maxQPS: 1000
-          # maxConns: 2
-
+        driver: "sql"
         sql:
-          driver: "mysql"
-          host: "mysql"
-          port: 3306
+          driver: "postgres12"
+          host: "postgres-postgresql.default.svc.cluster.local"
+          port: 5432
           database: "temporal"
           user: "temporal"
           password: "temporal"
@@ -157,32 +139,12 @@ server:
           secretName: ""
           maxConns: 20
           maxConnLifetime: "1h"
-          # connectAttributes:
-          # tx_isolation: 'READ-COMMITTED'
-
       visibility:
-        driver: "cassandra"
-
-        cassandra:
-          hosts: []
-          # port: 9042
-          keyspace: "temporal_visibility"
-          user: "user"
-          password: "password"
-          existingSecret: ""
-          # datacenter: "us-east-1a"
-          # maxQPS: 1000
-          # maxConns: 2
-          replicationFactor: 1
-          consistency:
-            default:
-              consistency: "local_quorum"
-              serialConsistency: "local_serial"
-
+        driver: "sql"
         sql:
-          driver: "mysql"
-          host: "mysql"
-          port: 3306
+          driver: "postgres12"
+          host: "postgres-postgresql.default.svc.cluster.local"
+          port: 5432
           database: "temporal_visibility"
           user: "temporal"
           password: "temporal"
@@ -190,8 +152,6 @@ server:
           secretName: ""
           maxConns: 20
           maxConnLifetime: "1h"
-          # connectAttributes:
-          #   tx_isolation: 'READ-COMMITTED'
 
   frontend:
     service:
@@ -387,7 +347,7 @@ schema:
   securityContext: {}
 
 elasticsearch:
-  enabled: true
+  enabled: false
   replicas: 3
   persistence:
     enabled: false
@@ -402,12 +362,12 @@ elasticsearch:
   visibilityIndex: "temporal_visibility_v1_dev"
 
 prometheus:
-  enabled: true
+  enabled: false
   nodeExporter:
     enabled: false
 
 grafana:
-  enabled: true
+  enabled: false
   replicas: 1
   testFramework:
     enabled: false
@@ -464,7 +424,7 @@ grafana:
         datasource: TemporalMetrics
 
 cassandra:
-  enabled: true
+  enabled: false
   persistence:
     enabled: false
   image:
