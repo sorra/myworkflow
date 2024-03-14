@@ -23,7 +23,7 @@ func runLeader() {
 	}
 	workflowRun, err := temporalClient.ExecuteWorkflow(
 		context.Background(), workflowOptions,
-		SimpleWorkflowDefinition, param)
+		ParentWorkflow, param)
 	if err != nil {
 		log.Fatalln("Unable to get workflow run:", err)
 	}
